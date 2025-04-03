@@ -10,6 +10,8 @@ Please refer to https://www.youtube.com/watch?v=S6IfqDXWa10
 4. C++ new standards offer concise ways of coding, e.g. std::list insert_or_assign. Developers don't need to take lines to check whether the key exists and what to do after that.
 
 ## LRU of Java Implementation
+Comparatively, very verbose.
+
 ```java
 class Node{
 	int key;
