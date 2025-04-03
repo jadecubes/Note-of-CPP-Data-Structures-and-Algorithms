@@ -1,19 +1,19 @@
 //Author: jadecubes by MIT Licence
 
 #include "SringBuffer.h"
-//distance between wi to buttom
+//distance between wi to bottom
 unsigned int RingWBDistance(SRingBuffer *RingBuffer){return (RingBuffer->MaxLen - RingBuffer->wi);}
 
-//Avallible write space
+//Available write space
 unsigned int RingAvailableSpace(SRingBuffer *RingBuffer){return (RingBuffer->MaxLen - RingBuffer->TotalLen);}
 
-//distance between ri to buttom
+//distance between ri to bottom
 unsigned int RingRBDistance(SRingBuffer *RingBuffer){return (RingBuffer->MaxLen - RingBuffer->ri);}
 
-//check wi is over boundery or not
+//check wi is over boundary or not
 void RingCheckWi(SRingBuffer *RingBuffer){if(RingBuffer->wi>=RingBuffer->MaxLen) RingBuffer->wi-=RingBuffer->MaxLen;}
 
-//check ri is over boundery or not
+//check ri is over boundary or not
 void RingCheckRi(SRingBuffer *RingBuffer){if(RingBuffer->ri>=RingBuffer->MaxLen) RingBuffer->ri-=RingBuffer->MaxLen;}
 
 //Ring initial function
