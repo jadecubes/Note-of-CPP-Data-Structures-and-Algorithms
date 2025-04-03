@@ -1,6 +1,6 @@
-# LRU
+# LRU Cache
 
-## What is LRU
+## What is LRU Cache
 Please refer to https://www.youtube.com/watch?v=S6IfqDXWa10
 
 ## Advantages of C++ Implementation
