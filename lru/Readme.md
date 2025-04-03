@@ -1,7 +1,7 @@
 # LRU
 
 ## What is LRU
-Please refer to [https://www.educative.io/implement-least-recently-used-cache](https://www.youtube.com/watch?v=S6IfqDXWa10)
+Please refer to https://www.youtube.com/watch?v=S6IfqDXWa10
 
 ## Advantages of C++ Implementation
 1. std::list is a double linked list, so developers don't need to worry about dummy head or reinvent the wheel but can directly use std::list to implement.
