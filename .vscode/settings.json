@@ -119,7 +119,8 @@
     "chrono": "cpp",
     "compare": "cpp",
     "concepts": "cpp",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "unordered_set": "cpp"
   },
   "C_Cpp_Runner.cCompilerPath": "clang",
   "C_Cpp_Runner.cppCompilerPath": "clang++",
