@@ -5,4 +5,4 @@ This note introduces key applications of STL that achieve creating data types wi
 ## Project Settings
 1. This project is developed in Visual Studio Code.
 2. The default environment is defined in files in .vscode
-3. Project is implemeneted based on g++ supporting c++17
+3. Project is implemeneted based on g++ supporting c++23
