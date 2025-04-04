@@ -57,7 +57,7 @@ public:
         }
 
         std::priority_queue<int, std::vector<int>, std::greater<int>> pq;
-        for (int i = 0; i < vertices.size(); ++i)
+        for (int i : vertices)
         {
             if (indegree[i] == 0)
                 pq.push(i);
@@ -77,7 +77,7 @@ public:
             }
         }
 
-        return result.size() == vertices.size() ? result : {};
+        return result.size() == vertices.size() ? result : (std::vector<int>{});
     }
 
 private:
