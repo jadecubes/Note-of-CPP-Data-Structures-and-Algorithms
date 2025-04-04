@@ -21,6 +21,11 @@ public:
 
     std::vector<int> topologicalSortDfs()
     {
+        std::sort(vertices.begin(), vertices.end());
+        for (int vertex : vertices)
+        {
+            std::sort(adjList[vertex].begin(), adjList[vertex].end());
+        }
         std::stack<int> stack;
         std::unordered_set<int> visited;
         std::unordered_set<int> visiting;
