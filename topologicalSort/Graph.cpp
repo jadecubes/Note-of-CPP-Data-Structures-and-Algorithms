@@ -2,7 +2,7 @@
 #include <stack>
 #include <unordered_set>
 #include <unordered_map>
-
+#include <queue>
 class Graph
 {
     std::unordered_map<int, std::vector<int>> adjList;
@@ -19,7 +19,7 @@ public:
         adjList[u].push_back(v);
     }
 
-    std::vector<int> topologicalSort()
+    std::vector<int> topologicalSortDfs()
     {
         std::stack<int> stack;
         std::unordered_set<int> visited;
@@ -43,6 +43,41 @@ public:
             stack.pop();
         }
         return result;
+    }
+
+    std::vector<int> topologicalSortBfs()
+    {
+        std::vector<int> indegree(vertices.size(), 0);
+        for (int u : vertices)
+        {
+            for (int v : adjList[u])
+            {
+                indegree[v]++;
+            }
+        }
+
+        std::priority_queue<int, std::vector<int>, std::greater<int>> pq;
+        for (int i = 0; i < vertices.size(); ++i)
+        {
+            if (indegree[i] == 0)
+                pq.push(i);
+        }
+
+        std::vector<int> result;
+        while (!pq.empty())
+        {
+            int node = pq.top();
+            pq.pop();
+            result.push_back(node);
+
+            for (int neighbor : adjList[node])
+            {
+                if (--indegree[neighbor] == 0)
+                    pq.push(neighbor);
+            }
+        }
+
+        return result.size() == vertices.size() ? result : {};
     }
 
 private:
