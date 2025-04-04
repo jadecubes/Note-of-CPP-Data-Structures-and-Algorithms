@@ -26,4 +26,11 @@ Please refer to https://www.youtube.com/watch?v=AfSk24UTFS8
 ```
 - Overall:
 ```
-    O(V log V + V + E + E log E) = O(V log V + E log E).```
+    O(V log V + V + E + E log E) = O(V log V + E log E).
+```
+
+### Time Complexity of topologicalSortBfs
+- In-degree Calculation
+  ```
+  Complexity: O(V + E) (accounts for visiting each vertex and edge once).
+  ```
