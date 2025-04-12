@@ -9,6 +9,14 @@ Please refer to https://www.youtube.com/watch?v=S6IfqDXWa10
 3. C++ offers choices for in-place object construction. developers can choose based on their need for memory operations.
 4. C++ new standards offer concise ways of coding, e.g. std::list insert_or_assign. Developers don't need to take lines to check whether the key exists and what to do after that.
 
+### Notes
+Code section below is from Lru::put,
+```
+      map.erase(list.back().first);
+      list.pop_back();
+```
+There are no checks to whether list is empty because the constructor forbids that LRU cache can be of 0 size.
+
 ## LRU Cache of Java Implementation
 Comparatively, very verbose.
 
