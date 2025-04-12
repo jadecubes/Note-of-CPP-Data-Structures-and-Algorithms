@@ -38,7 +38,7 @@ public:
     if (list.size() == capacity)
     {
       map.erase(list.back().first);
-      list.pop_back();
+      if(!list.empty()) list.pop_back();
     }
     list.emplace_front(key, value);
     map.insert_or_assign(key, list.begin());
