@@ -1,0 +1,13 @@
+add_executable(
+  {{MODULE_NAME}}_tests
+  {{TEST_FILE}}
+)
+set(GTEST_ROOT "${CMAKE_SOURCE_DIR}/external/gtest")
+set(CMAKE_PREFIX_PATH "${GTEST_ROOT}")
+target_link_libraries({{MODULE_NAME}}_tests
+  {{MODULE_NAME}}
+  GTest::gtest
+  GTest::gtest_main
+)
+include(GoogleTest)
+gtest_discover_tests({{MODULE_NAME}}_tests)

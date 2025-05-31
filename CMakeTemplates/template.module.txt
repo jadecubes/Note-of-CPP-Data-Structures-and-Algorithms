@@ -1,0 +1,11 @@
+# Template for CMakeLists.txt
+
+add_library(
+  {{MODULE_NAME}}
+  {{SRC_FILE}}
+  {{HEADER_FILE_OPTIONAL}}
+)
+
+target_include_directories({{MODULE_NAME}} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+{{TEST_BLOCK}}

@@ -5,6 +5,10 @@ set -e
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BUILD_DIR="$ROOT_DIR/build"
 
+# 🛠️ Run the script to generate CMakeLists.txt for each module
+echo "🔄 Generating CMakeLists.txt files..."
+"$ROOT_DIR/generateCMakeLists.sh"
+
 # Find the newest source file and its modification time
 read -r NEWEST_SRC_FILE_TIME NEWEST_SRC_FILE_NAME < <(
     find "$ROOT_DIR" -type f ! -path "$BUILD_DIR/*" -print0 |
