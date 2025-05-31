@@ -127,5 +127,11 @@
   "C_Cpp_Runner.cCompilerPath": "clang",
   "C_Cpp_Runner.cppCompilerPath": "clang++",
   "C_Cpp_Runner.debuggerPath": "lldb",
-  "C_Cpp_Runner.cStandard": ""
+  "C_Cpp_Runner.cStandard": "",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.clang-tidy": "explicit"
+  },
+  "clang-tidy.checkOnSave": true,
+  "clang-tidy.path": "/usr/bin/clang-tidy"
 }
