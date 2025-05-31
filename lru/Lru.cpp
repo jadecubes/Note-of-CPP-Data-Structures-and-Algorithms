@@ -33,7 +33,7 @@ public:
       list.pop_back();
     }
     list.emplace_front(key, value);
-    map.insert_or_assign(key, list.begin());
+    map[key] = list.begin();
   }
 
   void remove(int key) {
