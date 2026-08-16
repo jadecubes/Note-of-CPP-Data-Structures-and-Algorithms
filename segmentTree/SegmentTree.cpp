@@ -1,52 +1,48 @@
-#include <cmath>
-#include <vector>
+#include "SegmentTree.h"
 
-class SegmentTree {
-private:
-  std::vector<int> tree;
-  int N;
+#include <algorithm>
+#include <stdexcept>
 
-  static std::vector<int> createTreeVector(int n) {
-    int rangeStart = 0;
-    int rangeEnd = n - 1;
-    int rangeSize = rangeEnd - rangeStart + 1;
-    int levels = static_cast<int>(std::ceil(std::log(rangeSize) / std::log(2)));
-    int totalNodes = static_cast<int>(std::pow(2, levels + 1));
-    return {totalNodes, 0};
+std::vector<int> SegmentTree::createTreeVector(int n) {
+  if (n <= 0) {
+    throw std::invalid_argument("SegmentTree size must be positive");
   }
-
-public:
-  SegmentTree(int N) : N(N), tree(createTreeVector(N)) {
-    // Constructor body remains empty
+  // Round n up to a power of two; a complete tree over that many leaves has
+  // 2 * leaves nodes (integer arithmetic avoids float log/pow rounding).
+  int leaves = 1;
+  while (leaves < n) {
+    leaves *= 2;
   }
+  return std::vector<int>(2 * leaves, 0);
+}
 
-  void update(int L, int R, int val) { updateUtil(0, 0, N - 1, L, R, val); }
+SegmentTree::SegmentTree(int n) : tree(createTreeVector(n)), N(n) {}
 
-private:
-  void updateUtil(int i, int s, int e, int L, int R, int val) {
-    if (s > R || e < L)
-      return;
-    if (s >= L && e <= R) {
-      tree[i] = std::max(tree[i], val);
-      return;
-    }
-    if (s < e) {
-      int mid = s + (e - s) / 2;
-      updateUtil(2 * i + 1, s, mid, L, R, val);
-      updateUtil(2 * i + 2, mid + 1, e, L, R, val);
-    }
+void SegmentTree::update(int L, int R, int val) {
+  updateUtil(0, 0, N - 1, L, R, val);
+}
+
+void SegmentTree::updateUtil(int i, int s, int e, int L, int R, int val) {
+  if (s > R || e < L) { // no overlap
+    return;
   }
-
-public:
-  int query(int index) { return queryUtil(0, 0, N - 1, index); }
-
-private:
-  int queryUtil(int i, int s, int e, int index) {
-    if (s == e)
-      return tree[i];
-    int mid = s + (e - s) / 2;
-    int ret = (index <= mid) ? queryUtil(2 * i + 1, s, mid, index)
-                             : queryUtil(2 * i + 2, mid + 1, e, index);
-    return std::max(ret, tree[i]);
+  if (s >= L && e <= R) { // fully contained: record and stop
+    tree[i] = std::max(tree[i], val);
+    return;
   }
-};
+  int mid = s + (e - s) / 2; // partial overlap: recurse
+  updateUtil(2 * i + 1, s, mid, L, R, val);
+  updateUtil(2 * i + 2, mid + 1, e, L, R, val);
+}
+
+int SegmentTree::query(int index) const { return queryUtil(0, 0, N - 1, index); }
+
+int SegmentTree::queryUtil(int i, int s, int e, int index) const {
+  if (s == e) {
+    return tree[i];
+  }
+  int mid = s + (e - s) / 2;
+  int ret = (index <= mid) ? queryUtil(2 * i + 1, s, mid, index)
+                           : queryUtil(2 * i + 2, mid + 1, e, index);
+  return std::max(ret, tree[i]);
+}

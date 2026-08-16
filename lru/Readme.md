@@ -7,7 +7,7 @@ Please refer to https://www.youtube.com/watch?v=S6IfqDXWa10
 1. std::list is a double linked list, so developers don't need to worry about dummy head or reinvent the wheel but can directly use std::list to implement.
 2. C++ offers std::pair, so developers don't need to define Node class but can directly use std::pair to implement.
 3. C++ offers choices for in-place object construction. developers can choose based on their need for memory operations.
-4. C++ new standards offer concise ways of coding, e.g. std::list insert_or_assign. Developers don't need to take lines to check whether the key exists and what to do after that.
+4. C++ new standards offer concise ways of coding, e.g. std::unordered_map::insert_or_assign. Developers don't need to take lines to check whether the key exists and what to do after that.
 
 ### Notes
 Code section below is from Lru::put,

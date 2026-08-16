@@ -35,7 +35,7 @@ This repository offers:
 | Name | Difficulty | Topics | Time Complexity | Description |
 |------|-----------|--------|-----------------|-------------|
 | [Find K Closest Elements](findKClosest/) | ⭐⭐⭐ | Binary Search, Two Pointers | O(log n + k) | Find k closest elements to target in sorted array |
-| [Topological Sort](topologicalSort/) | ⭐⭐⭐ | Graph, DFS, BFS | O(V log V + E) | Two implementations with lexicographically smallest ordering |
+| [Topological Sort](topologicalSort/) | ⭐⭐⭐ | Graph, DFS, BFS | O(V log V + E) | DFS and BFS variants; the BFS (Kahn + min-heap) one guarantees the lexicographically smallest ordering |
 
 ---
 
@@ -47,34 +47,35 @@ This repository offers:
 
 ```cpp
 class Lru {
-private:
-    int capacity;
-    std::list<std::pair<int, int>> cache;  // Built-in doubly linked list
-    std::unordered_map<int, std::list<std::pair<int, int>>::iterator> map;
-
 public:
     int get(int key) {
-        if (map.find(key) == map.end()) return -1;
+        auto it = index.find(key);
+        if (it == index.end()) return -1;
 
-        // Move to front (most recently used)
-        cache.splice(cache.begin(), cache, map[key]);
-        return map[key]->second;
+        // Move to front (most recently used) in O(1)
+        entries.splice(entries.begin(), entries, it->second);
+        return it->second->second;
     }
 
     void put(int key, int value) {
-        if (map.find(key) != map.end()) {
-            cache.erase(map[key]);
+        auto it = index.find(key);
+        if (it != index.end()) {          // update in place, refresh recency
+            it->second->second = value;
+            entries.splice(entries.begin(), entries, it->second);
+            return;
         }
-
-        cache.emplace_front(key, value);
-        map[key] = cache.begin();
-
-        if (cache.size() > capacity) {
-            // Remove least recently used
-            map.erase(cache.back().first);
-            cache.pop_back();
+        if (entries.size() == capacity) { // evict least recently used
+            index.erase(entries.back().first);
+            entries.pop_back();
         }
+        entries.emplace_front(key, value);
+        index[key] = entries.begin();
     }
+
+private:
+    std::size_t capacity;
+    std::list<std::pair<int, int>> entries;  // built-in doubly linked list
+    std::unordered_map<int, std::list<std::pair<int, int>>::iterator> index;
 };
 ```
 
@@ -90,7 +91,7 @@ public:
 
 ## Featured Algorithm: Topological Sort
 
-**Problem**: Sort vertices in a directed acyclic graph (DAG) such that for every edge u→v, u comes before v. Return the lexicographically smallest ordering.
+**Problem**: Sort vertices in a directed acyclic graph (DAG) such that for every edge u→v, u comes before v — ideally the lexicographically smallest such ordering.
 
 **Implementation Comparison**:
 
@@ -119,7 +120,7 @@ while (!pq.empty()) {
 }
 ```
 
-**Why BFS Outperforms**: The BFS approach avoids sorting neighbors during traversal, resulting in better time complexity while maintaining lexicographical order through the priority queue.
+**Why BFS Outperforms**: The BFS approach avoids sorting neighbors during traversal (better time complexity), and it is the only one of the two that *guarantees* the lexicographically smallest ordering: the min-heap provably picks the smallest available vertex at every step, while a DFS must finish a whole subtree before returning even when the smallest ordering would interleave subtrees (the test suite includes a random-DAG counterexample).
 
 [View detailed analysis →](topologicalSort/)
 
@@ -148,7 +149,7 @@ Tackle graph algorithms with multiple approaches:
 - **Average Time Complexity**: O(log n) or better for most operations
 - **STL Usage**: 100% - All implementations leverage C++ Standard Template Library
 - **Memory Efficiency**: Optimal space complexity with minimal overhead
-- **Test Coverage**: Google Test suite included for critical modules
+- **Test Coverage**: Google Test suite for every module, run in CI on Linux and macOS
 - **Documentation**: Every implementation includes detailed README with complexity analysis
 
 ---
@@ -157,39 +158,20 @@ Tackle graph algorithms with multiple approaches:
 
 ```
 Note-of-CPP-Data-Structures-and-Algorithms/
-├── CMakeLists.txt              # Root build configuration
-├── README.md                   # This file
-├── build.sh                    # Incremental build script
-├── generateCMakeLists.sh      # Auto-generate module CMakeLists
-├── run_tests.sh               # Execute all tests
+├── CMakeLists.txt             # Root build configuration (fetches GoogleTest)
+├── README.md                  # This file
+├── build.sh                   # Configure + build
+├── run_tests.sh               # Build + run all tests via ctest
+├── .github/workflows/ci.yml   # CI: build & test on Linux and macOS
 │
-├── lru/                       # LRU Cache implementation
-│   ├── Lru.h
-│   ├── Lru.cpp
-│   ├── Readme.md
-│   └── CMakeLists.txt
-│
-├── ringBuffer/                # Ring buffer with tests
-│   ├── SringBuffer.h
-│   ├── SringBuffer.cpp
-│   ├── test_ring_buffer.cpp
-│   └── CMakeLists.txt
-│
-├── findKClosest/              # Binary search algorithm
-│   ├── FindKClosest.cpp
-│   ├── Readme.md
-│   └── CMakeLists.txt
-│
-├── segmentTree/               # Segment tree structure
-│   ├── SegmentTree.h
-│   ├── SegmentTree.cpp
-│   ├── Readme.md
-│   └── CMakeLists.txt
-│
-└── topologicalSort/           # Graph sorting algorithms
-    ├── Graph.cpp
-    ├── Readme.md
-    └── CMakeLists.txt
+└── <module>/                  # One directory per implementation, each with:
+    ├── <Name>.h               #   declaration
+    ├── <Name>.cpp             #   definition
+    ├── test_<name>.cpp        #   Google Test suite
+    ├── Readme.md              #   notes and complexity analysis
+    └── CMakeLists.txt         #   library + test targets
+
+Modules: findKClosest/, lru/, ringBuffer/, segmentTree/, topologicalSort/
 ```
 
 ---
@@ -197,32 +179,30 @@ Note-of-CPP-Data-Structures-and-Algorithms/
 ## Building the Project
 
 ### Prerequisites
-- CMake 3.14 or higher
+- CMake 3.24 or higher
 - C++17 compatible compiler (GCC 7+, Clang 5+, MSVC 2017+)
-- Google Test (automatically fetched by CMake)
+- Google Test (automatically fetched and pinned by CMake)
 
 ### Build Instructions
 
 ```bash
-# Generate CMakeLists for all modules
-./generateCMakeLists.sh
-
 # Build all implementations
 ./build.sh
 
-# Run tests
+# Build and run all tests
 ./run_tests.sh
 ```
 
-### Building Specific Modules
+### Working with a Single Module
 
 ```bash
-mkdir build && cd build
-cmake ..
-cmake --build .
+cmake -S . -B build
+cmake --build build --parallel
 
-# Run specific test
-./ringBuffer/test_ring_buffer
+# Run one module's tests
+ctest --test-dir build -R Lru --output-on-failure
+# ...or its test binary directly
+./build/lru/lru_tests
 ```
 
 ---
@@ -252,8 +232,9 @@ Contributions are welcome! To contribute:
 3. Follow the existing code structure:
    - Add `.h` and `.cpp` files in a new directory
    - Include a `Readme.md` with complexity analysis
-   - Add `CMakeLists.txt` (or use `generateCMakeLists.sh`)
-   - Write tests using Google Test if applicable
+   - Add a `CMakeLists.txt` (copy any module's — they are five lines) and an
+     `add_subdirectory` line in the root `CMakeLists.txt`
+   - Write tests using Google Test
 4. **Commit** your changes with descriptive messages
 5. **Push** to your branch
 6. Open a **Pull Request**

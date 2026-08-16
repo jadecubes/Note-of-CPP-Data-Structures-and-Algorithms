@@ -1,34 +1,33 @@
-//Author: jadecubes by MIT Licence
+// Author: jadecubes by MIT Licence
 
-#ifndef SringBufferH
-#define SringBufferH
+#ifndef SRING_BUFFER_H
+#define SRING_BUFFER_H
 
-#include <string>
-typedef struct _SRingBuffer
-{
-	char* buf;
-	unsigned long TotalLen;//current data length
-	unsigned long MaxLen;//max avalible space
-	unsigned long ri;//Read Index
-	unsigned long wi;//Write Index
-	
-}SRingBuffer;
+// C-style ring buffer bookkeeping (indices and lengths only; the caller owns
+// the backing storage and the actual copying).
+typedef struct SRingBuffer {
+  char *buf;
+  unsigned long TotalLen; // current data length
+  unsigned long MaxLen;   // max available space
+  unsigned long ri;       // read index
+  unsigned long wi;       // write index
+} SRingBuffer;
 
-//distant between wi to button
+// Distance from wi to the bottom of the buffer.
 unsigned int RingWBDistance(SRingBuffer *RingBuffer);
-//Avallible write space
+// Available write space.
 unsigned int RingAvailableSpace(SRingBuffer *RingBuffer);
-//distant between ri to button
+// Distance from ri to the bottom of the buffer.
 unsigned int RingRBDistance(SRingBuffer *RingBuffer);
-//check wi is over boundery or not
+// Wrap wi back into range if it passed the boundary.
 void RingCheckWi(SRingBuffer *RingBuffer);
-//check ri is over boundery or not
+// Wrap ri back into range if it passed the boundary.
 void RingCheckRi(SRingBuffer *RingBuffer);
-//Ring initial function
-void RingInit(SRingBuffer *RingBuffer,char* buff,int max_len);
-//Increase ri
-void RingIncRi(SRingBuffer *RingBuffer,int len);
-//Increase wi
-void RingIncWi(SRingBuffer *RingBuffer,int len); 
+// Initialize the ring over caller-owned storage.
+void RingInit(SRingBuffer *RingBuffer, char *buff, int max_len);
+// Advance ri by len (a read of len bytes).
+void RingIncRi(SRingBuffer *RingBuffer, int len);
+// Advance wi by len (a write of len bytes).
+void RingIncWi(SRingBuffer *RingBuffer, int len);
 
-#endif
+#endif // SRING_BUFFER_H

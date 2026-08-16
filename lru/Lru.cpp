@@ -1,47 +1,46 @@
-#include <list>
-#include <unordered_map>
-class Lru {
-private:
-  size_t capacity;
-  std::list<std::pair<int, int>> list;
-  std::unordered_map<int, std::list<std::pair<int, int>>::iterator> map;
+#include "Lru.h"
 
-public:
-  Lru(int cap) : capacity(cap) {
-    if (capacity <= 0) {
-      throw std::invalid_argument("capacity errors");
-    }
-  }
-  int get(int key) {
-    auto it = map.find(key);
-    if (it == map.end()) {
-      return -1;
-    }
-    list.splice(list.begin(), list, it->second);
-    return it->second->second;
-  }
+#include <stdexcept>
 
-  void put(int key, int value) {
-    auto foundIterator = map.find(key);
-    if (foundIterator != map.end()) {
-      foundIterator->second->second = value;
-      list.splice(list.begin(), list, foundIterator->second);
-      return;
-    }
-    if (list.size() == capacity) {
-      map.erase(list.back().first);
-      list.pop_back();
-    }
-    list.emplace_front(key, value);
-    map[key] = list.begin();
+Lru::Lru(int cap) {
+  // Validate as int: a negative cap converted to size_t first would wrap to
+  // a huge value and pass a size_t comparison.
+  if (cap <= 0) {
+    throw std::invalid_argument("Lru capacity must be positive");
   }
+  capacity = static_cast<std::size_t>(cap);
+}
 
-  void remove(int key) {
-    auto it = map.find(key);
-    if (it == map.end()) {
-      return;
-    }
-    list.erase(it->second);
-    map.erase(it);
+int Lru::get(int key) {
+  auto it = index.find(key);
+  if (it == index.end()) {
+    return -1;
   }
-};
+  entries.splice(entries.begin(), entries, it->second);
+  return it->second->second;
+}
+
+void Lru::put(int key, int value) {
+  auto it = index.find(key);
+  if (it != index.end()) {
+    it->second->second = value;
+    entries.splice(entries.begin(), entries, it->second);
+    return;
+  }
+  if (entries.size() == capacity) {
+    // entries cannot be empty here: the constructor rejects capacity 0.
+    index.erase(entries.back().first);
+    entries.pop_back();
+  }
+  entries.emplace_front(key, value);
+  index[key] = entries.begin();
+}
+
+void Lru::remove(int key) {
+  auto it = index.find(key);
+  if (it == index.end()) {
+    return;
+  }
+  entries.erase(it->second);
+  index.erase(it);
+}

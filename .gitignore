@@ -4,8 +4,7 @@ cmake-build-*/
 *.out
 *.exe
 
-# IDE specific
-.vscode/
+# IDE specific (.vscode/ is deliberately tracked)
 .idea/
 *.swp
 *.swo

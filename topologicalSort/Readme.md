@@ -1,5 +1,7 @@
 # Topological Sort
-In the file, the functions, topologicalSortBfs and topologicalSortDfs generate the smallest lexicographical order of topological sort.
+topologicalSortBfs (Kahn's algorithm with a min-heap) generates the lexicographically smallest topological order: at every step it provably picks the smallest vertex whose prerequisites are all satisfied.
+
+topologicalSortDfs generates *a* valid, deterministic topological order (reverse postorder with descending visits), but **not necessarily the smallest one**: a DFS must finish a vertex's entire subtree before returning, while the smallest order may need to interleave subtrees. The test suite's random-DAG test demonstrates a divergence (DFS `11,0,8,3,...` vs smallest `11,0,3,8,...`). Use the BFS variant when the smallest order matters.
 
 ## What Is It?
 Please refer to https://www.youtube.com/watch?v=AfSk24UTFS8
