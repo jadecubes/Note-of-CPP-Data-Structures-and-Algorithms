@@ -46,38 +46,20 @@ This repository offers:
 **C++ Implementation Highlights**:
 
 ```cpp
-class Lru {
-public:
-    int get(int key) {
-        auto it = index.find(key);
-        if (it == index.end()) return -1;
+// std::list (doubly linked) + std::unordered_map of iterators:
+int Lru::get(int key) {
+  auto it = index.find(key);
+  if (it == index.end()) return -1;
 
-        // Move to front (most recently used) in O(1)
-        entries.splice(entries.begin(), entries, it->second);
-        return it->second->second;
-    }
-
-    void put(int key, int value) {
-        auto it = index.find(key);
-        if (it != index.end()) {          // update in place, refresh recency
-            it->second->second = value;
-            entries.splice(entries.begin(), entries, it->second);
-            return;
-        }
-        if (entries.size() == capacity) { // evict least recently used
-            index.erase(entries.back().first);
-            entries.pop_back();
-        }
-        entries.emplace_front(key, value);
-        index[key] = entries.begin();
-    }
-
-private:
-    std::size_t capacity;
-    std::list<std::pair<int, int>> entries;  // built-in doubly linked list
-    std::unordered_map<int, std::list<std::pair<int, int>>::iterator> index;
-};
+  // splice() moves the node to the front (most recently used) in O(1),
+  // without invalidating any iterators — the whole trick in one line.
+  entries.splice(entries.begin(), entries, it->second);
+  return it->second->second;
+}
 ```
+
+See [lru/Lru.cpp](lru/Lru.cpp) for the full implementation — the snippet
+above is the highlight, not a copy to keep in sync.
 
 **Why C++ Wins Here**:
 - No need for custom Node class - `std::pair` handles key-value storage
@@ -120,7 +102,7 @@ while (!pq.empty()) {
 }
 ```
 
-**Why BFS Outperforms**: The BFS approach avoids sorting neighbors during traversal (better time complexity), and it is the only one of the two that *guarantees* the lexicographically smallest ordering: the min-heap provably picks the smallest available vertex at every step, while a DFS must finish a whole subtree before returning even when the smallest ordering would interleave subtrees (the test suite includes a random-DAG counterexample).
+**Why BFS Outperforms**: The BFS approach avoids sorting neighbors during traversal (better time complexity), and it is the only one of the two that *guarantees* the lexicographically smallest ordering — see [topologicalSort/Readme.md](topologicalSort/) for why no DFS can.
 
 [View detailed analysis →](topologicalSort/)
 
@@ -232,7 +214,7 @@ Contributions are welcome! To contribute:
 3. Follow the existing code structure:
    - Add `.h` and `.cpp` files in a new directory
    - Include a `Readme.md` with complexity analysis
-   - Add a `CMakeLists.txt` (copy any module's — they are five lines) and an
+   - Add a `CMakeLists.txt` (copy any module's — a few lines) and an
      `add_subdirectory` line in the root `CMakeLists.txt`
    - Write tests using Google Test
 4. **Commit** your changes with descriptive messages

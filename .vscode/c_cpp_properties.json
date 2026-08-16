@@ -2,18 +2,11 @@
     "configurations": [
         {
             "name": "macos-clang-arm64",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "/opt/homebrew/include",
-                "/opt/homebrew/opt/googletest/include"
-            ],
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "compilerPath": "/usr/bin/clang",
             "cStandard": "${default}",
-            "cppStandard": "c++23",
-            "intelliSenseMode": "macos-clang-arm64",
-            "compilerArgs": [
-                ""
-            ]
+            "cppStandard": "c++17",
+            "intelliSenseMode": "macos-clang-arm64"
         }
     ],
     "version": 4

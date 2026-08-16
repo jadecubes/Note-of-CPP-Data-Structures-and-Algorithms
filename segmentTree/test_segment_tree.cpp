@@ -30,6 +30,16 @@ TEST(SegmentTreeTest, OverlappingUpdatesKeepMaximum) {
   EXPECT_EQ(tree.query(4), 5);
 }
 
+TEST(SegmentTreeTest, LowerUpdateOnSameNodeDoesNotOverwrite) {
+  // Identical range: both updates land on the same covering node, so a
+  // plain assignment (instead of max) would regress query to 3.
+  SegmentTree tree(8);
+  tree.update(0, 7, 5);
+  tree.update(0, 7, 3);
+  EXPECT_EQ(tree.query(0), 5);
+  EXPECT_EQ(tree.query(7), 5);
+}
+
 TEST(SegmentTreeTest, SingleElementRangeUpdate) {
   SegmentTree tree(4);
   tree.update(1, 1, 7);
@@ -38,10 +48,25 @@ TEST(SegmentTreeTest, SingleElementRangeUpdate) {
 }
 
 TEST(SegmentTreeTest, NonPowerOfTwoSize) {
+  // A partial interior range on n=5 forces recursion through the uneven
+  // [0,4] -> [0,2],[3,4] splits (full-range updates stop at the root and
+  // would not exercise the padded tree at all).
   SegmentTree tree(5); // internal leaf count rounds up to 8
-  tree.update(0, 4, 2);
-  EXPECT_EQ(tree.query(0), 2);
-  EXPECT_EQ(tree.query(4), 2);
+  tree.update(1, 3, 4);
+  EXPECT_EQ(tree.query(0), 0);
+  EXPECT_EQ(tree.query(1), 4);
+  EXPECT_EQ(tree.query(2), 4);
+  EXPECT_EQ(tree.query(3), 4);
+  EXPECT_EQ(tree.query(4), 0);
+}
+
+TEST(SegmentTreeTest, OutOfRangeAccessThrows) {
+  SegmentTree tree(5);
+  EXPECT_THROW(tree.query(-1), std::out_of_range);
+  EXPECT_THROW(tree.query(5), std::out_of_range);
+  EXPECT_THROW(tree.update(-1, 3, 1), std::out_of_range);
+  EXPECT_THROW(tree.update(0, 5, 1), std::out_of_range);
+  EXPECT_THROW(tree.update(3, 2, 1), std::out_of_range); // L > R
 }
 
 TEST(SegmentTreeTest, SizeOneTree) {

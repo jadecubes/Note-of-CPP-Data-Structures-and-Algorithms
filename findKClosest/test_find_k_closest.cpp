@@ -1,5 +1,6 @@
 #include "FindKClosest.h"
 
+#include <limits>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -40,4 +41,19 @@ TEST(FindKClosestTest, KLargerThanArrayReturnsWholeArray) {
 TEST(FindKClosestTest, NonPositiveKReturnsEmpty) {
   EXPECT_TRUE(findClosestElements({1, 2, 3}, 0, 2).empty());
   EXPECT_TRUE(findClosestElements({1, 2, 3}, -1, 2).empty());
+}
+
+TEST(FindKClosestTest, EmptyArrayReturnsEmpty) {
+  EXPECT_TRUE(findClosestElements({}, 3, 5).empty());
+}
+
+TEST(FindKClosestTest, ExtremeValuesDoNotOverflow) {
+  // With int distance arithmetic, both subtractions overflow (UB) and the
+  // farthest window is returned instead of the closest.
+  const int kMax = std::numeric_limits<int>::max();
+  const int kMin = std::numeric_limits<int>::min();
+  EXPECT_EQ(findClosestElements({kMin, kMin + 1, kMax - 1, kMax}, 2, kMax),
+            (std::vector<int>{kMax - 1, kMax}));
+  EXPECT_EQ(findClosestElements({kMin, kMin + 1, kMax - 1, kMax}, 2, kMin),
+            (std::vector<int>{kMin, kMin + 1}));
 }

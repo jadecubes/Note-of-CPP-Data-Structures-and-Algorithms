@@ -9,21 +9,13 @@
 
 #include <gtest/gtest.h>
 
-TEST(GraphTest, DfsSortsSimpleDag) {
+TEST(GraphTest, SortsSimpleDag) {
   Graph g({0, 1, 2, 3});
   g.addEdge(0, 1);
   g.addEdge(0, 2);
   g.addEdge(1, 3);
   g.addEdge(2, 3);
   EXPECT_EQ(g.topologicalSortDfs(), (std::vector<int>{0, 1, 2, 3}));
-}
-
-TEST(GraphTest, BfsSortsSimpleDag) {
-  Graph g({0, 1, 2, 3});
-  g.addEdge(0, 1);
-  g.addEdge(0, 2);
-  g.addEdge(1, 3);
-  g.addEdge(2, 3);
   EXPECT_EQ(g.topologicalSortBfs(), (std::vector<int>{0, 1, 2, 3}));
 }
 
@@ -51,6 +43,43 @@ TEST(GraphTest, CycleReturnsEmptyFromBoth) {
   g.addEdge(2, 0);
   EXPECT_TRUE(g.topologicalSortDfs().empty());
   EXPECT_TRUE(g.topologicalSortBfs().empty());
+}
+
+TEST(GraphTest, CycleWithAcyclicPartStillReturnsEmpty) {
+  // Vertex 0 is isolated and 1->2->3->1 is a cycle. The BFS variant only
+  // notices this cycle via its final size check (0 does get processed), so
+  // this pins that check specifically.
+  Graph g({0, 1, 2, 3});
+  g.addEdge(1, 2);
+  g.addEdge(2, 3);
+  g.addEdge(3, 1);
+  EXPECT_TRUE(g.topologicalSortDfs().empty());
+  EXPECT_TRUE(g.topologicalSortBfs().empty());
+}
+
+TEST(GraphTest, SelfLoopIsACycle) {
+  Graph g({0, 1});
+  g.addEdge(1, 1);
+  EXPECT_TRUE(g.topologicalSortDfs().empty());
+  EXPECT_TRUE(g.topologicalSortBfs().empty());
+}
+
+TEST(GraphTest, EdgeToUndeclaredVertexRegistersIt) {
+  // 99 was never passed to the constructor; addEdge must register it so
+  // both variants agree instead of DFS emitting it while BFS reports a
+  // phantom cycle.
+  Graph g({0, 1});
+  g.addEdge(0, 1);
+  g.addEdge(1, 99);
+  EXPECT_EQ(g.topologicalSortDfs(), (std::vector<int>{0, 1, 99}));
+  EXPECT_EQ(g.topologicalSortBfs(), (std::vector<int>{0, 1, 99}));
+}
+
+TEST(GraphTest, DuplicateConstructorLabelsAreIgnored) {
+  Graph g({1, 1, 2});
+  g.addEdge(1, 2);
+  EXPECT_EQ(g.topologicalSortDfs(), (std::vector<int>{1, 2}));
+  EXPECT_EQ(g.topologicalSortBfs(), (std::vector<int>{1, 2}));
 }
 
 TEST(GraphTest, DisconnectedVerticesAppearInOrder) {
@@ -105,9 +134,8 @@ bool isValidTopologicalOrder(const std::vector<int> &order,
 
 // On random DAGs: both variants must return valid orders, and the BFS
 // (Kahn + min-heap) result — the provably lexicographically smallest one —
-// must never be beaten by the DFS result. The two may legitimately differ:
-// no DFS visit order can guarantee the smallest ordering, because a DFS must
-// finish a subtree before returning while the smallest order may interleave.
+// must never be beaten by the DFS result. The two may legitimately differ;
+// see Readme.md for why no DFS can guarantee the smallest ordering.
 TEST(GraphTest, RandomDagsProduceValidOrdersAndBfsIsSmallest) {
   std::mt19937 rng(20260816); // fixed seed: deterministic test
   for (int trial = 0; trial < 500; ++trial) {

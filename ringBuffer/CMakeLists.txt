@@ -1,4 +1,4 @@
-add_library(ringBuffer SringBuffer.cpp SringBuffer.h)
+add_library(ringBuffer SRingBuffer.cpp SRingBuffer.h)
 target_include_directories(ringBuffer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(ringBuffer_tests test_ring_buffer.cpp)

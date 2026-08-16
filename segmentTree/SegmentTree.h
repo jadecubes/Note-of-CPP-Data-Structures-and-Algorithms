@@ -13,7 +13,9 @@ public:
   // Throws std::invalid_argument if n <= 0.
   explicit SegmentTree(int n);
 
+  // Throws std::out_of_range unless 0 <= L <= R < n.
   void update(int L, int R, int val);
+  // Throws std::out_of_range unless 0 <= index < n.
   int query(int index) const;
 
 private:

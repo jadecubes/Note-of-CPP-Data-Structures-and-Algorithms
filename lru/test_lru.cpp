@@ -22,6 +22,15 @@ TEST(LruTest, PutUpdatesExistingKey) {
   EXPECT_EQ(cache.get(1), 200);
 }
 
+TEST(LruTest, UpdatingKeyInFullCacheEvictsNothing) {
+  Lru cache(2);
+  cache.put(1, 100);
+  cache.put(2, 200);
+  cache.put(2, 222); // update in place: must not take the eviction path
+  EXPECT_EQ(cache.get(1), 100);
+  EXPECT_EQ(cache.get(2), 222);
+}
+
 TEST(LruTest, EvictsLeastRecentlyUsedWhenFull) {
   Lru cache(2);
   cache.put(1, 100);

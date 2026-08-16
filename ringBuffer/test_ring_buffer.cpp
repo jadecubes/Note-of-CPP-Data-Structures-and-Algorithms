@@ -1,5 +1,7 @@
-#include "SringBuffer.h"
+#include "SRingBuffer.h"
+
 #include <cstring>
+
 #include <gtest/gtest.h>
 
 class RingBufferTest : public ::testing::Test {
@@ -44,6 +46,18 @@ TEST_F(RingBufferTest, ReadWrapsAroundCorrectly) {
   RingIncWi(&ring, kBufferSize);
   RingIncRi(&ring, kBufferSize);
   EXPECT_EQ(ring.ri, 0);
+  EXPECT_EQ(ring.TotalLen, 0);
+}
+
+TEST_F(RingBufferTest, MidBufferWrapKeepsRemainder) {
+  // Wrap past the boundary (not exactly onto it): 6 + 5 = 11 -> index 3.
+  RingIncWi(&ring, 6);
+  RingIncRi(&ring, 6);
+  RingIncWi(&ring, 5);
+  EXPECT_EQ(ring.wi, 3);
+  EXPECT_EQ(ring.TotalLen, 5);
+  RingIncRi(&ring, 5);
+  EXPECT_EQ(ring.ri, 3);
   EXPECT_EQ(ring.TotalLen, 0);
 }
 

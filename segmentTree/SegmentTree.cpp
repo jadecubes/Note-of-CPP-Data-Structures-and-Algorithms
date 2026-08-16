@@ -19,6 +19,9 @@ std::vector<int> SegmentTree::createTreeVector(int n) {
 SegmentTree::SegmentTree(int n) : tree(createTreeVector(n)), N(n) {}
 
 void SegmentTree::update(int L, int R, int val) {
+  if (L < 0 || R >= N || L > R) {
+    throw std::out_of_range("SegmentTree::update range invalid");
+  }
   updateUtil(0, 0, N - 1, L, R, val);
 }
 
@@ -35,7 +38,12 @@ void SegmentTree::updateUtil(int i, int s, int e, int L, int R, int val) {
   updateUtil(2 * i + 2, mid + 1, e, L, R, val);
 }
 
-int SegmentTree::query(int index) const { return queryUtil(0, 0, N - 1, index); }
+int SegmentTree::query(int index) const {
+  if (index < 0 || index >= N) {
+    throw std::out_of_range("SegmentTree::query index invalid");
+  }
+  return queryUtil(0, 0, N - 1, index);
+}
 
 int SegmentTree::queryUtil(int i, int s, int e, int index) const {
   if (s == e) {

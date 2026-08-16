@@ -2,12 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "C/C++ Runner: Debug Session",
+      "name": "Debug a module's tests (edit 'program')",
       "type": "lldb",
       "request": "launch",
       "args": [],
-      "cwd": "/Users/d/github/Note-of-CPP-Data-Structures-and-Algorithms",
-      "program": "/Users/d/github/Note-of-CPP-Data-Structures-and-Algorithms/build/Debug/outDebug"
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/build/lru/lru_tests"
     }
   ]
 }

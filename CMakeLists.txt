@@ -5,6 +5,9 @@ project(CppDataStructuresAndAlgorithms LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# For clangd / VS Code IntelliSense (.vscode/c_cpp_properties.json reads it).
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 enable_testing()
 
 # GoogleTest, pinned by hash so every machine and CI runner builds the same

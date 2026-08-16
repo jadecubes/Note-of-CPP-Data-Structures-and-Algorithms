@@ -4,18 +4,31 @@
 #include <functional>
 #include <queue>
 
-Graph::Graph(const std::vector<int> &values) : vertices(values) {}
+Graph::Graph(const std::vector<int> &values) {
+  for (int v : values) {
+    addVertex(v);
+  }
+}
 
-void Graph::addEdge(int u, int v) { adjList[u].push_back(v); }
+// Dedup: without it a duplicate label (or an edge endpoint that was also a
+// constructor value) inflates vertices.size() and makes the BFS cycle check
+// falsely report a cycle.
+void Graph::addVertex(int v) {
+  if (labels.insert(v).second) {
+    vertices.push_back(v);
+  }
+}
+
+void Graph::addEdge(int u, int v) {
+  addVertex(u); // unknown endpoints become vertices, so both sort variants
+  addVertex(v); // agree on the vertex set
+  adjList[u].push_back(v);
+}
 
 std::vector<int> Graph::topologicalSortDfs() {
   // The result is the reverse of the push order, so descending visits push
-  // small vertices last (they pop first). This makes the output
-  // deterministic and usually small, but NOT guaranteed lexicographically
-  // smallest: once a DFS enters a vertex it must finish that vertex's whole
-  // subtree, while the smallest order may need to interleave subtrees.
-  // (Counterexample found by the random-DAG test: DFS 11,0,8,3,... vs
-  // smallest 11,0,3,8,... — use topologicalSortBfs for the smallest order.)
+  // small vertices last (they pop first). Deterministic, but NOT guaranteed
+  // lexicographically smallest — no DFS visit order can be; see Readme.md.
   std::sort(vertices.begin(), vertices.end(), std::greater<int>());
   for (int vertex : vertices) {
     std::sort(adjList[vertex].begin(), adjList[vertex].end(),

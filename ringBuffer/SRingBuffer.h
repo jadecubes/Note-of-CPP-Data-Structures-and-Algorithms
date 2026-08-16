@@ -4,7 +4,8 @@
 #define SRING_BUFFER_H
 
 // C-style ring buffer bookkeeping (indices and lengths only; the caller owns
-// the backing storage and the actual copying).
+// the backing storage and the actual copying). See Readme.md for the usage
+// pattern.
 typedef struct SRingBuffer {
   char *buf;
   unsigned long TotalLen; // current data length
