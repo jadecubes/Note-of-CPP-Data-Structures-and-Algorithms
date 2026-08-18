@@ -27,15 +27,15 @@ This repository offers:
 | Name | Difficulty | Topics | Time Complexity | Description |
 |------|-----------|--------|-----------------|-------------|
 | [LRU Cache](lru/) | ⭐⭐⭐ | Hash Table, Doubly Linked List | O(1) get/put | Cache with O(1) operations using `std::list` and `std::unordered_map` |
-| [Ring Buffer](ringBuffer/) | ⭐⭐ | Circular Buffer, Arrays | O(1) read/write | Circular buffer implementation with boundary management |
-| [Segment Tree](segmentTree/) | ⭐⭐⭐⭐ | Trees, Range Queries | O(log n) update/query | Efficient range update and point query operations |
+| [Ring Buffer](ring-buffer/) | ⭐⭐ | Circular Buffer, Arrays | O(1) read/write | Circular buffer implementation with boundary management |
+| [Segment Tree](segment-tree/) | ⭐⭐⭐⭐ | Trees, Range Queries | O(log n) update/query | Efficient range update and point query operations |
 
 ### Algorithms
 
 | Name | Difficulty | Topics | Time Complexity | Description |
 |------|-----------|--------|-----------------|-------------|
-| [Find K Closest Elements](findKClosest/) | ⭐⭐⭐ | Binary Search, Two Pointers | O(log n + k) | Find k closest elements to target in sorted array |
-| [Topological Sort](topologicalSort/) | ⭐⭐⭐ | Graph, DFS, BFS | O(V log V + E) | DFS and BFS variants; the BFS (Kahn + min-heap) one guarantees the lexicographically smallest ordering |
+| [Find K Closest Elements](find-k-closest/) | ⭐⭐⭐ | Binary Search, Two Pointers | O(log n + k) | Find k closest elements to target in sorted array |
+| [Topological Sort](topological-sort/) | ⭐⭐⭐ | Graph, DFS, BFS | O(V log V + E) | DFS and BFS variants; the BFS (Kahn + min-heap) one guarantees the lexicographically smallest ordering |
 
 ---
 
@@ -58,7 +58,7 @@ int Lru::get(int key) {
 }
 ```
 
-See [lru/Lru.cpp](lru/Lru.cpp) for the full implementation — the snippet
+See [lru/lru.cpp](lru/lru.cpp) for the full implementation — the snippet
 above is the highlight, not a copy to keep in sync.
 
 **Why C++ Wins Here**:
@@ -102,9 +102,9 @@ while (!pq.empty()) {
 }
 ```
 
-**Why BFS Outperforms**: The BFS approach avoids sorting neighbors during traversal (better time complexity), and it is the only one of the two that *guarantees* the lexicographically smallest ordering — see [topologicalSort/Readme.md](topologicalSort/) for why no DFS can.
+**Why BFS Outperforms**: The BFS approach avoids sorting neighbors during traversal (better time complexity), and it is the only one of the two that *guarantees* the lexicographically smallest ordering — see [topological-sort/Readme.md](topological-sort/) for why no DFS can.
 
-[View detailed analysis →](topologicalSort/)
+[View detailed analysis →](topological-sort/)
 
 ---
 
@@ -139,21 +139,21 @@ Tackle graph algorithms with multiple approaches:
 ## Project Structure
 
 ```
-Note-of-CPP-Data-Structures-and-Algorithms/
+note-of-cpp-data-structures-and-algorithms/
 ├── CMakeLists.txt             # Root build configuration (fetches GoogleTest)
 ├── README.md                  # This file
 ├── build.sh                   # Configure + build
 ├── run_tests.sh               # Build + run all tests via ctest
 ├── .github/workflows/ci.yml   # CI: build & test on Linux and macOS
 │
-└── <module>/                  # One directory per implementation, each with:
-    ├── <Name>.h               #   declaration
-    ├── <Name>.cpp             #   definition
-    ├── test_<name>.cpp        #   Google Test suite
+└── <module-name>/             # One directory per implementation, each with:
+    ├── <module_name>.h        #   declaration
+    ├── <module_name>.cpp      #   definition
+    ├── test_<module_name>.cpp #   Google Test suite
     ├── Readme.md              #   notes and complexity analysis
     └── CMakeLists.txt         #   library + test targets
 
-Modules: findKClosest/, lru/, ringBuffer/, segmentTree/, topologicalSort/
+Modules: find-k-closest/, lru/, ring-buffer/, segment-tree/, topological-sort/
 ```
 
 ---
@@ -222,7 +222,11 @@ Contributions are welcome! To contribute:
 6. Open a **Pull Request**
 
 ### Code Style Guidelines
+- Directories are `kebab-case`; source files and CMake targets are
+  `snake_case`; C++ classes stay `CamelCase` and methods `camelCase`
 - Use C++17 features and STL containers
+- The build must stay clean under `-Wconversion -Wsign-conversion` (CI
+  configures with `-DWARNINGS_AS_ERRORS=ON`)
 - Include time/space complexity in comments
 - Follow existing naming conventions
 - Add comparison with alternative approaches in README

@@ -1,4 +1,4 @@
-#include "SegmentTree.h"
+#include "segment_tree.h"
 
 #include <algorithm>
 #include <cstddef>

@@ -1,6 +1,6 @@
 // Author: jadecubes by MIT Licence
 
-#include "SRingBuffer.h"
+#include "s_ring_buffer.h"
 
 size_t RingWBDistance(SRingBuffer *RingBuffer) {
   return (RingBuffer->MaxLen - RingBuffer->wi);
@@ -15,13 +15,15 @@ size_t RingRBDistance(SRingBuffer *RingBuffer) {
 }
 
 void RingCheckWi(SRingBuffer *RingBuffer) {
-  if (RingBuffer->wi >= RingBuffer->MaxLen)
+  if (RingBuffer->wi >= RingBuffer->MaxLen) {
     RingBuffer->wi -= RingBuffer->MaxLen;
+  }
 }
 
 void RingCheckRi(SRingBuffer *RingBuffer) {
-  if (RingBuffer->ri >= RingBuffer->MaxLen)
+  if (RingBuffer->ri >= RingBuffer->MaxLen) {
     RingBuffer->ri -= RingBuffer->MaxLen;
+  }
 }
 
 void RingInit(SRingBuffer *RingBuffer, char *buff, size_t max_len) {

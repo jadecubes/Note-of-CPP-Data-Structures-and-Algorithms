@@ -17,13 +17,13 @@ public:
   // Throws std::out_of_range unless 0 <= L <= R < n.
   void update(int L, int R, int val);
   // Throws std::out_of_range unless 0 <= index < n.
-  int query(int index) const;
+  [[nodiscard]] int query(int index) const;
 
 private:
   static std::vector<int> createTreeVector(int n);
 
   void updateUtil(std::size_t i, int s, int e, int L, int R, int val);
-  int queryUtil(std::size_t i, int s, int e, int index) const;
+  [[nodiscard]] int queryUtil(std::size_t i, int s, int e, int index) const;
 
   std::vector<int> tree;
   int N;

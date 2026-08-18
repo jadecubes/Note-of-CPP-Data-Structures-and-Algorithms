@@ -1,4 +1,4 @@
-#include "SegmentTree.h"
+#include "segment_tree.h"
 
 #include <stdexcept>
 
@@ -62,8 +62,9 @@ TEST(SegmentTreeTest, NonPowerOfTwoSize) {
 
 TEST(SegmentTreeTest, OutOfRangeAccessThrows) {
   SegmentTree tree(5);
-  EXPECT_THROW(tree.query(-1), std::out_of_range);
-  EXPECT_THROW(tree.query(5), std::out_of_range);
+  // query is [[nodiscard]]; the cast says the throw is what is under test.
+  EXPECT_THROW((void)tree.query(-1), std::out_of_range);
+  EXPECT_THROW((void)tree.query(5), std::out_of_range);
   EXPECT_THROW(tree.update(-1, 3, 1), std::out_of_range);
   EXPECT_THROW(tree.update(0, 5, 1), std::out_of_range);
   EXPECT_THROW(tree.update(3, 2, 1), std::out_of_range); // L > R

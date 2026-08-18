@@ -1,7 +1,7 @@
 // Author: jadecubes by MIT Licence
 
-#ifndef SRING_BUFFER_H
-#define SRING_BUFFER_H
+#ifndef S_RING_BUFFER_H
+#define S_RING_BUFFER_H
 
 #include <stddef.h>
 
@@ -12,6 +12,9 @@
 // Every length and index is size_t: these are buffer offsets, so the type
 // that measures objects is the right one. Mixing int and unsigned long here
 // used to truncate on the accessors and sign-convert on the mutators.
+// The C-style typedef is what this module is demonstrating; `using` would
+// not compile as C.
+// NOLINTNEXTLINE(modernize-use-using)
 typedef struct SRingBuffer {
   char *buf;
   size_t TotalLen; // current data length
@@ -37,4 +40,4 @@ void RingIncRi(SRingBuffer *RingBuffer, size_t len);
 // Advance wi by len (a write of len bytes).
 void RingIncWi(SRingBuffer *RingBuffer, size_t len);
 
-#endif // SRING_BUFFER_H
+#endif // S_RING_BUFFER_H

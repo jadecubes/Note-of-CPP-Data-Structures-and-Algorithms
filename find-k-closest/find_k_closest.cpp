@@ -1,4 +1,4 @@
-#include "FindKClosest.h"
+#include "find_k_closest.h"
 
 #include <cstddef>
 
