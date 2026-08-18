@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Configure
-        run: cmake -S . -B build
+        run: cmake -S . -B build -DWARNINGS_AS_ERRORS=ON
       - name: Build
         run: cmake --build build --parallel
       - name: Test

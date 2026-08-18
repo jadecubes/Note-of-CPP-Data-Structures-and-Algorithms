@@ -1,6 +1,7 @@
 #ifndef SEGMENT_TREE_H
 #define SEGMENT_TREE_H
 
+#include <cstddef>
 #include <vector>
 
 // Segment tree over indices [0, n) supporting range *max-assignment* updates
@@ -21,8 +22,8 @@ public:
 private:
   static std::vector<int> createTreeVector(int n);
 
-  void updateUtil(int i, int s, int e, int L, int R, int val);
-  int queryUtil(int i, int s, int e, int index) const;
+  void updateUtil(std::size_t i, int s, int e, int L, int R, int val);
+  int queryUtil(std::size_t i, int s, int e, int index) const;
 
   std::vector<int> tree;
   int N;

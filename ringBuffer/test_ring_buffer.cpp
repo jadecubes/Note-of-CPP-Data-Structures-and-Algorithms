@@ -1,12 +1,13 @@
 #include "SRingBuffer.h"
 
+#include <cstddef>
 #include <cstring>
 
 #include <gtest/gtest.h>
 
 class RingBufferTest : public ::testing::Test {
 protected:
-  static constexpr int kBufferSize = 8;
+  static constexpr std::size_t kBufferSize = 8;
   char rawBuffer[kBufferSize];
   SRingBuffer ring;
 

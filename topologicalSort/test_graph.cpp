@@ -139,20 +139,20 @@ bool isValidTopologicalOrder(const std::vector<int> &order,
 TEST(GraphTest, RandomDagsProduceValidOrdersAndBfsIsSmallest) {
   std::mt19937 rng(20260816); // fixed seed: deterministic test
   for (int trial = 0; trial < 500; ++trial) {
-    const int n = 2 + static_cast<int>(rng() % 7);
+    const std::size_t n = 2 + static_cast<std::size_t>(rng() % 7);
 
     // Random distinct labels, not necessarily contiguous.
     std::vector<int> labels(n);
-    for (int i = 0; i < n; ++i) {
-      labels[i] = i * 3 + static_cast<int>(rng() % 3);
+    for (std::size_t i = 0; i < n; ++i) {
+      labels[i] = static_cast<int>(i) * 3 + static_cast<int>(rng() % 3);
     }
     std::shuffle(labels.begin(), labels.end(), rng);
 
     // Edges only from earlier to later shuffle positions: guaranteed acyclic.
     Graph g(labels);
     std::vector<std::pair<int, int>> edges;
-    for (int i = 0; i < n; ++i) {
-      for (int j = i + 1; j < n; ++j) {
+    for (std::size_t i = 0; i < n; ++i) {
+      for (std::size_t j = i + 1; j < n; ++j) {
         if (rng() % 3 == 0) {
           g.addEdge(labels[i], labels[j]);
           edges.emplace_back(labels[i], labels[j]);

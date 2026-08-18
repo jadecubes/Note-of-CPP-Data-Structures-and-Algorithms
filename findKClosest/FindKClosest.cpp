@@ -1,5 +1,7 @@
 #include "FindKClosest.h"
 
+#include <cstddef>
+
 std::vector<int> findClosestElements(const std::vector<int> &arr, int k, int x) {
   int n = static_cast<int>(arr.size());
   if (k <= 0) {
@@ -14,12 +16,18 @@ std::vector<int> findClosestElements(const std::vector<int> &arr, int k, int x) 
   // window must start right of m. Distances are computed in long long: with
   // int, x = INT_MAX against negative elements overflows (UB) and picks the
   // farthest window instead of the closest.
+
+  // The one place a position becomes a subscript, widened to the long long
+  // the comparison needs.
+  auto at = [&arr](int i) {
+    return static_cast<long long>(arr[static_cast<std::size_t>(i)]);
+  };
+
   int l = 0;
   int h = n - k;
   while (l < h) {
     int m = l + (h - l) / 2;
-    if (static_cast<long long>(x) - arr[m] >
-        static_cast<long long>(arr[m + k]) - x) {
+    if (static_cast<long long>(x) - at(m) > at(m + k) - x) {
       l = m + 1;
     } else {
       h = m;

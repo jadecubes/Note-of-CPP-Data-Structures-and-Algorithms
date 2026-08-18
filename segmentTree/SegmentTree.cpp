@@ -1,6 +1,7 @@
 #include "SegmentTree.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <stdexcept>
 
 std::vector<int> SegmentTree::createTreeVector(int n) {
@@ -9,8 +10,8 @@ std::vector<int> SegmentTree::createTreeVector(int n) {
   }
   // Round n up to a power of two; a complete tree over that many leaves has
   // 2 * leaves nodes (integer arithmetic avoids float log/pow rounding).
-  int leaves = 1;
-  while (leaves < n) {
+  std::size_t leaves = 1;
+  while (leaves < static_cast<std::size_t>(n)) {
     leaves *= 2;
   }
   return std::vector<int>(2 * leaves, 0);
@@ -25,7 +26,8 @@ void SegmentTree::update(int L, int R, int val) {
   updateUtil(0, 0, N - 1, L, R, val);
 }
 
-void SegmentTree::updateUtil(int i, int s, int e, int L, int R, int val) {
+void SegmentTree::updateUtil(std::size_t i, int s, int e, int L, int R,
+                             int val) {
   if (s > R || e < L) { // no overlap
     return;
   }
@@ -45,7 +47,7 @@ int SegmentTree::query(int index) const {
   return queryUtil(0, 0, N - 1, index);
 }
 
-int SegmentTree::queryUtil(int i, int s, int e, int index) const {
+int SegmentTree::queryUtil(std::size_t i, int s, int e, int index) const {
   if (s == e) {
     return tree[i];
   }

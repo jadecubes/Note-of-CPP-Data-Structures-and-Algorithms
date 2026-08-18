@@ -2,15 +2,15 @@
 
 #include "SRingBuffer.h"
 
-unsigned int RingWBDistance(SRingBuffer *RingBuffer) {
+size_t RingWBDistance(SRingBuffer *RingBuffer) {
   return (RingBuffer->MaxLen - RingBuffer->wi);
 }
 
-unsigned int RingAvailableSpace(SRingBuffer *RingBuffer) {
+size_t RingAvailableSpace(SRingBuffer *RingBuffer) {
   return (RingBuffer->MaxLen - RingBuffer->TotalLen);
 }
 
-unsigned int RingRBDistance(SRingBuffer *RingBuffer) {
+size_t RingRBDistance(SRingBuffer *RingBuffer) {
   return (RingBuffer->MaxLen - RingBuffer->ri);
 }
 
@@ -24,7 +24,7 @@ void RingCheckRi(SRingBuffer *RingBuffer) {
     RingBuffer->ri -= RingBuffer->MaxLen;
 }
 
-void RingInit(SRingBuffer *RingBuffer, char *buff, int max_len) {
+void RingInit(SRingBuffer *RingBuffer, char *buff, size_t max_len) {
   RingBuffer->ri = 0;
   RingBuffer->wi = 0;
   RingBuffer->TotalLen = 0;
@@ -32,13 +32,13 @@ void RingInit(SRingBuffer *RingBuffer, char *buff, int max_len) {
   RingBuffer->MaxLen = max_len;
 }
 
-void RingIncRi(SRingBuffer *RingBuffer, int len) {
+void RingIncRi(SRingBuffer *RingBuffer, size_t len) {
   RingBuffer->ri += len;
   RingCheckRi(RingBuffer);
   RingBuffer->TotalLen -= len;
 }
 
-void RingIncWi(SRingBuffer *RingBuffer, int len) {
+void RingIncWi(SRingBuffer *RingBuffer, size_t len) {
   RingBuffer->wi += len;
   RingCheckWi(RingBuffer);
   RingBuffer->TotalLen += len;

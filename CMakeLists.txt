@@ -22,6 +22,23 @@ set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 
+# Warnings for this project's own code. Deliberately set *after* GoogleTest
+# is pulled in: add_compile_options only reaches targets declared later, so
+# the vendored sources keep their own flags and stay quiet.
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (used by CI)" OFF)
+if(MSVC)
+  add_compile_options(/W4)
+  if(WARNINGS_AS_ERRORS)
+    add_compile_options(/WX)
+  endif()
+else()
+  add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+                      -Wshadow)
+  if(WARNINGS_AS_ERRORS)
+    add_compile_options(-Werror)
+  endif()
+endif()
+
 add_subdirectory(findKClosest)
 add_subdirectory(lru)
 add_subdirectory(ringBuffer)
