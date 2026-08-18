@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      // -p points clang-tidy at build/compile_commands.json, which the root
+      // CMakeLists exports. The previous "-I./include" named a directory
+      // this repository does not have, so every module's includes went
+      // unresolved.
+      "label": "Run clang-tidy on the current file",
+      "type": "shell",
+      "command": "clang-tidy",
+      "args": ["${file}", "-p", "${workspaceFolder}/build"],
+      // On macOS the Homebrew clang-tidy does not find the SDK headers on
+      // its own; without this every file fails to parse and the checks
+      // report nonsense (methods that use members "can be made static").
+      "osx": {
+        "args": [
+          "${file}",
+          "-p",
+          "${workspaceFolder}/build",
+          "--extra-arg=-isysroot",
+          "--extra-arg=${env:SDKROOT}"
+        ]
+      },
+      "problemMatcher": "$gcc",
+      "group": "build"
+    }
+  ]
+}

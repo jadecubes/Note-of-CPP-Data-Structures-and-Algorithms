@@ -8,7 +8,7 @@ If the input array is not sorted, std::multimap is recommended as a solution.
 ```C++
 #include <iostream>
 #include <vector>
-#include <multimap>
+#include <map>
 #include <algorithm>
 
 class FindKClosestCorrect {

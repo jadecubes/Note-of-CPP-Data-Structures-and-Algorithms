@@ -1,0 +1,6 @@
+add_library(find_k_closest find_k_closest.cpp find_k_closest.h)
+target_include_directories(find_k_closest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable(find_k_closest_tests test_find_k_closest.cpp)
+target_link_libraries(find_k_closest_tests PRIVATE find_k_closest GTest::gtest_main)
+gtest_discover_tests(find_k_closest_tests)

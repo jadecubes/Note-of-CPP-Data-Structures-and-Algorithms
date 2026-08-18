@@ -1,35 +1,32 @@
 // Author: jadecubes by MIT Licence
 
-#include "SringBuffer.h"
-// distance between wi to bottom
-unsigned int RingWBDistance(SRingBuffer *RingBuffer) {
+#include "s_ring_buffer.h"
+
+size_t RingWBDistance(SRingBuffer *RingBuffer) {
   return (RingBuffer->MaxLen - RingBuffer->wi);
 }
 
-// Available write space
-unsigned int RingAvailableSpace(SRingBuffer *RingBuffer) {
+size_t RingAvailableSpace(SRingBuffer *RingBuffer) {
   return (RingBuffer->MaxLen - RingBuffer->TotalLen);
 }
 
-// distance between ri to bottom
-unsigned int RingRBDistance(SRingBuffer *RingBuffer) {
+size_t RingRBDistance(SRingBuffer *RingBuffer) {
   return (RingBuffer->MaxLen - RingBuffer->ri);
 }
 
-// check wi is over boundary or not
 void RingCheckWi(SRingBuffer *RingBuffer) {
-  if (RingBuffer->wi >= RingBuffer->MaxLen)
+  if (RingBuffer->wi >= RingBuffer->MaxLen) {
     RingBuffer->wi -= RingBuffer->MaxLen;
+  }
 }
 
-// check ri is over boundary or not
 void RingCheckRi(SRingBuffer *RingBuffer) {
-  if (RingBuffer->ri >= RingBuffer->MaxLen)
+  if (RingBuffer->ri >= RingBuffer->MaxLen) {
     RingBuffer->ri -= RingBuffer->MaxLen;
+  }
 }
 
-// Ring initial function
-void RingInit(SRingBuffer *RingBuffer, char *buff, int max_len) {
+void RingInit(SRingBuffer *RingBuffer, char *buff, size_t max_len) {
   RingBuffer->ri = 0;
   RingBuffer->wi = 0;
   RingBuffer->TotalLen = 0;
@@ -37,15 +34,13 @@ void RingInit(SRingBuffer *RingBuffer, char *buff, int max_len) {
   RingBuffer->MaxLen = max_len;
 }
 
-// Increase ri
-void RingIncRi(SRingBuffer *RingBuffer, int len) {
+void RingIncRi(SRingBuffer *RingBuffer, size_t len) {
   RingBuffer->ri += len;
   RingCheckRi(RingBuffer);
   RingBuffer->TotalLen -= len;
 }
 
-// Increase wi
-void RingIncWi(SRingBuffer *RingBuffer, int len) {
+void RingIncWi(SRingBuffer *RingBuffer, size_t len) {
   RingBuffer->wi += len;
   RingCheckWi(RingBuffer);
   RingBuffer->TotalLen += len;
