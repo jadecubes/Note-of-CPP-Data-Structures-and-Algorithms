@@ -1,4 +1,30 @@
-Checks: '-*,clang-analyzer-*,modernize-*'
-WarningsAsErrors: ''
-HeaderFilterRegex: '.*'
-FormatStyle: file
+---
+# Correctness-oriented checks. Naming checks are deliberately off: this
+# repository deliberately mixes a C-style module (RingInit, TotalLen) with
+# C++ modules using CamelCase types and camelCase methods, and unifying
+# those is a different exercise from the one each module is teaching.
+Checks: >
+  bugprone-*,
+  clang-analyzer-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -bugprone-easily-swappable-parameters,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length,
+  -readability-identifier-naming,
+  -readability-magic-numbers,
+  -readability-math-missing-parentheses,
+  -modernize-use-transparent-functors,
+  -modernize-return-braced-init-list
+# Three checks are off for reasons specific to this code:
+#   readability-math-missing-parentheses  flags `s + (e - s) / 2` and
+#     `2 * i + 1`, the standard midpoint and heap-child idioms.
+#   modernize-use-transparent-functors    would turn std::greater<int> into
+#     std::greater<>; the explicit type is clearer in teaching code.
+#   modernize-return-braced-init-list     would rewrite
+#     `return std::vector<int>(2 * leaves, 0);` as `return {2 * leaves, 0};`,
+#     a two-element vector -- exactly the out-of-bounds bug this project
+#     fixed in SegmentTree. Applying it would reintroduce that bug.
+HeaderFilterRegex: '(find-k-closest|lru|ring-buffer|segment-tree|topological-sort)/'
